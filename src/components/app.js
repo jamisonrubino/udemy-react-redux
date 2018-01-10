@@ -9,20 +9,24 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      videos: []
+      videos: [],
+      term: ''
     }
   }
 
   componentDidMount() {
-    YTSearch({ key: API_KEY, term: 'term' }, videos => {
-      this.setState({videos})
+    YTSearch({ key: API_KEY, term: this.state.term }, videos => {
+      this.setState({ videos })
     })
   }
 
   render() {
     return (
       <div>
-        <SearchBar />
+        <SearchBar change={e=>{
+          this.setState({term:e.target.value})
+          console.log(this.state.term)
+        }} />
         <VideoList
           videos={this.state.videos}
           />
