@@ -11,31 +11,42 @@ export default class App extends Component {
     super(props)
     this.state = {
       videos: [],
-      term: ''
+      term: '',
+      selectedVideo: null
+    }
+    this.searchTimeout = null
+  }
+
+  search() {
+    YTSearch({ key: API_KEY, term: this.state.term }, videos => {
+      console.log("search ran, term: ", this.state.term)
+      this.setState({ videos: videos,
+        selectedVideo: videos[0]})
+    })
+  }
+
+  handleChange(e) {
+    clearTimeout(this.searchTimeout)
+    if(e.target.value.length > 0) {
+      const val = e.target.value
+      this.searchTimeout = setTimeout(()=>this.setState({term:val}, ()=>this.search()), 1000)
+    } else {
+      this.setState({term:''})
     }
   }
 
-  componentDidMount() {
-    YTSearch({ key: API_KEY, term: this.state.term }, videos => {
-      this.setState({ videos })
-    })
-  }
-  //
-  // this.search = () => {
-  //   YTSearch({ key: API_KEY, term: this.state.term }, videos => {
-  //     this.setState({ videos })
-  // }
 
   render() {
     return (
       <div>
-        <SearchBar change={e=>{
-          console.log(this.state.term)
-          this.setState({term:e.target.value})
-        }} />
-        <VideoDetail video={this.state.videos[0]} />
+        <SearchBar
+          change={e=>this.handleChange(e)}
+          term={this.state.term} />
+        <VideoDetail
+          video={this.state.selectedVideo} />
         <VideoList
           videos={this.state.videos}
+          onVideoSelect={selectedVideo => this.setState({selectedVideo})}
           />
       </div>
     );

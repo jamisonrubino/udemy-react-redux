@@ -7,15 +7,13 @@ class SearchBar extends Component {
 
   render() {
     return (
-      <div>
+      <div className="search-bar">
         <input
-        value={this.props.term}
         onChange={this.props.change} />
         <h1>{this.props.term}</h1>
       </div>
     );
   }
-
 }
 
 export default SearchBar;
